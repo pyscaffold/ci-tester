@@ -3,7 +3,7 @@
     Setup file for ci_tester.
     Use setup.cfg to configure your project.
 
-    This file was generated with PyScaffold 3.2.3.post0.dev40+gba6f921.
+    This file was generated with PyScaffold 3.2.3.post132+g1564bfa.d20200716.
     PyScaffold helps you to put up the scaffold of your new Python project.
     Learn more under: https://pyscaffold.org/
 """
