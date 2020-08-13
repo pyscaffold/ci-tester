@@ -1,22 +1,20 @@
-# -*- coding: utf-8 -*-
 """
     Setup file for ci_tester.
     Use setup.cfg to configure your project.
 
-    This file was generated with PyScaffold 3.2.3.post132+g1564bfa.d20200716.
+    This file was generated with PyScaffold 3.3a1.post207+g263737a.
     PyScaffold helps you to put up the scaffold of your new Python project.
     Learn more under: https://pyscaffold.org/
 """
-import sys
-from pkg_resources import VersionConflict, require
 from setuptools import setup
 
-try:
-    require("setuptools>=38.3")
-except VersionConflict:
-    print("Error: version of setuptools is too old (<38.3)!")
-    sys.exit(1)
-
-
 if __name__ == "__main__":
-    setup(use_pyscaffold=True)
+    try:
+        setup(use_scm_version={"version_scheme": "post-release"})
+    except:  # noqa
+        print(
+            "\n\nAn error occurred while building the project, "
+            "please ensure you have the most updated version of setuptools with: "
+            "`pip install -U setuptools`\n\n"
+        )
+        raise
