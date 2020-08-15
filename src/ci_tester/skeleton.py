@@ -22,7 +22,7 @@ from ci_tester import __version__
 
 __author__ = "Anderson Bravalheri"
 __copyright__ = "Anderson Bravalheri"
-__license__ = "mozilla"
+__license__ = "MPL-2.0"
 
 _logger = logging.getLogger(__name__)
 

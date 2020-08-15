@@ -4,7 +4,7 @@ from ci_tester.skeleton import fib
 
 __author__ = "Anderson Bravalheri"
 __copyright__ = "Anderson Bravalheri"
-__license__ = "mozilla"
+__license__ = "MPL-2.0"
 
 
 def test_fib():

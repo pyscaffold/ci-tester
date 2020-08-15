@@ -29,5 +29,5 @@ Don't forget to tell your contributors to also install and use pre-commit.
 Note
 ====
 
-This project has been set up using PyScaffold 3.2.3.post180+gc7877c4. For details and usage
+This project has been set up using PyScaffold 4.0a2. For details and usage
 information on PyScaffold see https://pyscaffold.org/.
