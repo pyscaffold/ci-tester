@@ -1,8 +1,8 @@
 """
-    Setup file for ci_tester.
+    Setup file for ci-tester.
     Use setup.cfg to configure your project.
 
-    This file was generated with PyScaffold 4.0a2.
+    This file was generated with PyScaffold 4.0a2.post9+ga436b84.
     PyScaffold helps you to put up the scaffold of your new Python project.
     Learn more under: https://pyscaffold.org/
 """
@@ -14,7 +14,8 @@ if __name__ == "__main__":
     except:  # noqa
         print(
             "\n\nAn error occurred while building the project, "
-            "please ensure you have the most updated version of setuptools with: "
-            "`pip install -U setuptools`\n\n"
+            "please ensure you have the most updated version of setuptools, "
+            "setuptools_scm and wheel with:\n"
+            "   pip install -U setuptools setuptools_scm wheel\n\n"
         )
         raise

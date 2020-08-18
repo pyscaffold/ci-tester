@@ -8,6 +8,9 @@ It should be updated (forcefully if necessary) every time a change that impacts 
 integrations is made (a PR on PyScaffold's main repository that changes CI is
 expected to provide a companion PR to this repository).
 
+
+.. pyscaffold-notes::
+
 Making Changes & Contributing
 =============================
 
