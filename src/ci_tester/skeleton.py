@@ -38,7 +38,7 @@ def fib(n):
     """
     assert n > 0
     a, b = 1, 1
-    for i in range(n - 1):
+    for _i in range(n - 1):
         a, b = b, a + b
     return a
 
@@ -104,8 +104,7 @@ def main(args):
 
 
 def run():
-    """Entry point for console_scripts
-    """
+    """Entry point for console_scripts"""
     main(sys.argv[1:])
 
 

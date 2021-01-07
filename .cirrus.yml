@@ -1,3 +1,6 @@
+# Cirrus CI configuration file using the matrix feature
+# Read more under https://cirrus-ci.org/guide/writing-tasks/
+# THIS FILE IS SUPPOSED TO BE AN EXAMPLE. MODIFY IT ACCORDING TO YOUR NEEDS!
 ---
 # Default values to be merged into tasks:
 auto_cancellation: false
@@ -17,6 +20,10 @@ env:
     folder: $PIP_CACHE
   tox_install_script:
     - python -m pip install --upgrade pip setuptools tox
+  prepare_script: &prepare
+    # This script is also used in Windows, so the shell is not POSIX
+    - git config --global user.email "you@example.com"
+    - git config --global user.name "Your Name"
   clean_workspace_script:
     # Avoid information carried from one run to the other
     - rm -rf .coverage junit-*.xml .tox
@@ -52,13 +59,16 @@ linux_mac_task:
     - name: test (Linux - 3.8)
       container: {image: "python:3.8-buster"}
       install_script: *debian-install
+    - name: test (Linux - 3.9)
+      container: {image: "python:3.9-buster"}
+      install_script: *debian-install
     - name: test (Linux - Anaconda)
       container: {image: "continuumio/anaconda3:2019.03"}
       install_script: *debian-install
       extra_install_script:
         - apt-get update
         - apt-get install -y --fix-missing gcc python3-dev
-          # ^  Required by a weird conda bug... Aparently this is need for isolated builds
+          # ^  required by a weird conda bug - apparently this is needed for isolated builds
           #    https://cirrus-ci.com/task/5049814234693632?command=test#L251
     - name: test (OS X)
       osx_instance: {image: "catalina-xcode"}
@@ -130,6 +140,7 @@ windows_task:
     - REG ADD "HKEY_CURRENT_USER\Software\Microsoft\Command Processor" /v Autorun /t REG_SZ /d "@chcp 65001>nul" /f
     - python -m ensurepip
     - python -m pip install --upgrade --user pip setuptools certifi tox
+  prepare_script: *prepare
   clean_workspace_script:
     # Avoid information carried from one run to the other
     # CMD is not capable of globbing, so we have to use PowerShell
