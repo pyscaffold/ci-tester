@@ -26,6 +26,9 @@ install:
 before_script:
   - git config --global user.email "you@example.com"
   - git config --global user.name "Your Name"
+  # Useful information in case of debug
+  - if [[ "$DISTRIB" == "conda" ]]; then conda info -a; fi
+  - which tox
 script:
   - tox -e build
   - tox
