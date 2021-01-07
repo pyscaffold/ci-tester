@@ -9,7 +9,7 @@ integrations is made (a PR on PyScaffold's main repository that changes CI is
 expected to provide a companion PR to this repository).
 
 
-.. pyscaffold-notes::
+.. _pyscaffold-notes:
 
 Making Changes & Contributing
 =============================
