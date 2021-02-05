@@ -2,11 +2,15 @@
 ci-tester
 =========
 
+    Internal dummy repository to test PyScaffold's several CI integrations **(FOR TESTING PURPOSES ONLY)**.
 
-Internal dummy repository to test PyScaffold's several UI integrations (FOR TESTING PURPOSES ONLY)
 It should be updated (forcefully if necessary) every time a change that impacts PyScaffold's CI
 integrations is made (a PR on PyScaffold's main repository that changes CI is
 expected to provide a companion PR to this repository).
+
+After a forced update with ``putup --no-config -U -f .``, don't forget to
+reconcile the changes (specially in the ``README.rst`` and ``.cirrus.yml``
+files) using ``git difftool``.
 
 
 .. _pyscaffold-notes:
