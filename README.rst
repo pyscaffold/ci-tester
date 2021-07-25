@@ -1,3 +1,34 @@
+.. These are examples of badges you might want to add to your README:
+   please update the URLs accordingly
+
+    .. image:: https://readthedocs.org/projects/ci-tester/badge/?version=latest
+        :alt: ReadTheDocs
+        :target: https://ci-tester.readthedocs.io/en/stable/
+    .. image:: https://img.shields.io/pypi/v/ci-tester.svg
+        :alt: PyPI-Server
+        :target: https://pypi.org/project/ci-tester/
+    .. image:: https://img.shields.io/conda/vn/conda-forge/ci-tester.svg
+        :alt: Conda-Forge
+        :target: https://anaconda.org/conda-forge/ci-tester
+    .. image:: https://pepy.tech/badge/ci-tester/month
+        :alt: Monthly Downloads
+        :target: https://pepy.tech/project/ci-tester
+
+.. image:: https://api.cirrus-ci.com/github/pyscaffold/ci-tester.svg?branch=main
+    :alt: Built Status
+    :target: https://cirrus-ci.com/github/pyscaffold/ci-tester
+.. image:: https://img.shields.io/coveralls/github/pyscaffold/ci-tester/main.svg
+    :alt: Coveralls
+    :target: https://coveralls.io/r/pyscaffold/ci-tester
+.. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter
+    :alt: Twitter
+    :target: https://twitter.com/ci-tester
+.. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
+    :alt: Project generated with PyScaffold
+    :target: https://pyscaffold.org/
+
+|
+
 =========
 ci-tester
 =========
@@ -31,10 +62,10 @@ It is a good idea to update the hooks to the latest version::
 
 Don't forget to tell your contributors to also install and use pre-commit.
 
-.. _pre-commit: http://pre-commit.com/
+.. _pre-commit: https://pre-commit.com/
 
 Note
 ====
 
-This project has been set up using PyScaffold 4.0rc2. For details and usage
+This project has been set up using PyScaffold 4.0.2.post1.dev60+g1585605. For details and usage
 information on PyScaffold see https://pyscaffold.org/.
