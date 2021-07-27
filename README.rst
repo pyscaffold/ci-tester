@@ -13,6 +13,9 @@
     .. image:: https://pepy.tech/badge/ci-tester/month
         :alt: Monthly Downloads
         :target: https://pepy.tech/project/ci-tester
+   .. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter
+       :alt: Twitter
+       :target: https://twitter.com/ci-tester
 
 .. image:: https://api.cirrus-ci.com/github/pyscaffold/ci-tester.svg?branch=main
     :alt: Built Status
@@ -20,9 +23,6 @@
 .. image:: https://img.shields.io/coveralls/github/pyscaffold/ci-tester/main.svg
     :alt: Coveralls
     :target: https://coveralls.io/r/pyscaffold/ci-tester
-.. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter
-    :alt: Twitter
-    :target: https://twitter.com/ci-tester
 .. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
     :alt: Project generated with PyScaffold
     :target: https://pyscaffold.org/
