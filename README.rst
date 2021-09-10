@@ -67,5 +67,5 @@ Don't forget to tell your contributors to also install and use pre-commit.
 Note
 ====
 
-This project has been set up using PyScaffold 4.0.2.post1.dev60+g1585605. For details and usage
+This project has been set up using PyScaffold 4.1rc1. For details and usage
 information on PyScaffold see https://pyscaffold.org/.

@@ -7,8 +7,8 @@ auto_cancellation: false
 env:
   PATH: ${HOME}/.local/bin:${PATH}
   # ^  add user paths
-  COVERALLS_REPO_TOKEN: ENCRYPTED[93a2e96a39f5179862d8bd0ee99000dd18df330c2cf0123d3486569b34f2752fbb45085a9e034df76bcee6d13a14ced3]
-  # ^ ADD YOUR ENCRYPTED TOKEN HERE: https://cirrus-ci.org/guide/writing-tasks/#encrypted-variables
+  # COVERALLS_REPO_TOKEN: ENCRYPTED[]
+  # ^ You can add an encrypted token or use CirrusCI web interface to set the variable
   #   See discussion in: https://github.com/cirruslabs/cirrus-ci-docs/discussions/866
   PIP_CACHE: ${HOME}/.cache/pip
   LC_ALL: C.UTF-8
@@ -42,36 +42,34 @@ env:
     # ^  tox is better if invoked as a module on Windows/OSX
 
 
+# Deep clone script for POSIX environments (required for setuptools-scm)
+.clone_script: &clone |
+  if [ -z "$CIRRUS_PR" ]; then
+    git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
+    git reset --hard $CIRRUS_CHANGE_IN_REPO
+  else
+    git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
+    git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
+    git reset --hard $CIRRUS_CHANGE_IN_REPO
+  fi
+
+
 # ---- Task definitions ----
 
 linux_mac_task:
   # Use custom cloning since otherwise git tags are missing
-  clone_script: &clone |
-    if [ -z "$CIRRUS_PR" ]; then
-      git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git reset --hard $CIRRUS_CHANGE_IN_REPO
-    else
-      git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
-      git reset --hard $CIRRUS_CHANGE_IN_REPO
-    fi
+  clone_script: *clone
   matrix:
     - name: test (Linux - 3.6)
       container: {image: "python:3.6-buster"}
-      install_script: &debian-install
-        - apt-get install -y git
     - name: test (Linux - 3.7)
       container: {image: "python:3.7-buster"}
-      install_script: *debian-install
     - name: test (Linux - 3.8)
       container: {image: "python:3.8-buster"}
-      install_script: *debian-install
     - name: test (Linux - 3.9)
       container: {image: "python:3.9-buster"}
-      install_script: *debian-install
     - name: test (Linux - Anaconda)
       container: {image: "continuumio/anaconda3:2021.05"}
-      install_script: *debian-install
       extra_install_script:
         - conda install -y -c conda-forge virtualenv build setuptools setuptools-scm pip tox
     - name: test (OS X)
@@ -166,7 +164,6 @@ coverage_task:
     - test (Linux - 3.8)
     - test (Linux - Anaconda)
     - test (OS X)
-  install_script: *debian-install
   pip_install_script:
     pip install --user --upgrade coverage coveralls pre-commit
   precommit_script:
