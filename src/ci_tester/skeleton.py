@@ -23,7 +23,7 @@ References:
 import argparse
 import logging
 import sys
-from typing import List
+from typing import List  # required for Python < 3.9
 
 from ci_tester import __version__
 
