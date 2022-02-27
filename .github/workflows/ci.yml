@@ -108,7 +108,7 @@ jobs:
       - name: Publish Package
         env:
           # See: https://pypi.org/help/#apitoken
-          TWINE_REPOSITORY: pypi
+          TWINE_REPOSITORY: testpypi
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: pipx tox -e publish
