@@ -22,6 +22,10 @@ workflow:
       variables:
         CI_BRANCH: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME
         CI_PULL_REQUEST: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == 'push'
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'web' || $CI_PIPELINE_SOURCE == 'schedule'
+    - if: $CI_COMMIT_BRANCH
 
 cache:
   key: pip-pipx-pre-commit-$CI_JOB_IMAGE
