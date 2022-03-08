@@ -5,9 +5,8 @@ stages:
   - test
   - finalize
 
-# Change pip's cache directory to be inside the project directory since we can
-# only cache local items.
 variables:
+  # Change cache dirs to be inside the project (can only cache local items)
   PIP_CACHE_DIR: $CI_PROJECT_DIR/.cache/pip
   PIPX_HOME: $CI_PROJECT_DIR/.cache/pipx
   PRE_COMMIT_HOME: $CI_PROJECT_DIR/.cache/pre-commit
@@ -25,6 +24,7 @@ workflow:
         CI_PULL_REQUEST: $CI_MERGE_REQUEST_IID
 
 cache:
+  key: pip-pipx-pre-commit-$CI_JOB_IMAGE
   paths:
     - .cache/pip
     - .cache/pipx
