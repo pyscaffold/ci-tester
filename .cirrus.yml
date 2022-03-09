@@ -39,8 +39,10 @@ env:
     fingerprint_key: "dist"
     reupload_on_changes: false
   test_script:
+    # Help debugging
     - python --version
     - python -c 'import site; print(site.PREFIXES)'
+    # Actual tests
     - tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
     - coverage lcov -o coverage.lcov
@@ -65,7 +67,7 @@ check_task:
   container: {image: "python:3.10-bullseye"}  # most recent => better type support
   <<: *task-template
   check_script:
-    - pre_commit run --all-files --show-diff-on-failure
+    - pre-commit run --all-files --show-diff-on-failure
     # - tox -e typecheck
 
 build_task:
@@ -123,8 +125,6 @@ windows_task:
     image: "cirrusci/windowsservercore:2019"
     os_version: 2019
   windows_install_script:
-    - echo $PATH
-    - ls /
     - choco install -y --no-progress python --version=3.9.10
     - pip install --upgrade certifi
   <<: *task-template
