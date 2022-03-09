@@ -36,7 +36,7 @@ env:
   env: &test-env-template
     COVERALLS_PARALLEL: "true"
     COVERALLS_FLAG_NAME: ${CIRRUS_TASK_NAME}
-  dist_cache: {folder: "dist"}
+  dist_cache: {folder: "dist", fingerprint_key: "dist"}
   test_script:
     - tox --installpkg dist/*.whl -- -n 6 -rfEx --durations 10 --color yes
   submit_coverage_script:
@@ -72,7 +72,7 @@ build_task:
   clone_script: *clone
   <<: *task-template
   build_script: tox -e clean,build
-  dist_cache: {folder: dist}  # Upload distribution to be shared with other tasks
+  dist_cache: {folder: "dist", fingerprint_key: "dist"}  # Upload distribution to be shared with other tasks
 
 test_task:
   matrix:
@@ -148,7 +148,7 @@ publish_task:
   depends_on: [check, build, test]
   only_if: $CIRRUS_TAG =~ 'v\d.*' && $CIRRUS_USER_PERMISSION == "admin"
   <<: *task-template
-  dist_cache: {folder: "dist"}
+  dist_cache: {folder: "dist", fingerprint_key: "dist"}
   env:
     TWINE_REPOSITORY: pypi
     TWINE_USERNAME: __token__
