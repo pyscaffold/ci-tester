@@ -67,6 +67,7 @@ check_task:
 build_task:
   name: build (Linux - 3.10)
   alias: build
+  container: {image: "python:3.10-bullseye"}
   clone_script: *clone
   <<: *task-template
   build_script: tox -e clean,build
@@ -124,8 +125,7 @@ windows_task:
 
 finalize_task:
   container: {image: "python:3.10-bullseye"}
-  only_if: $CIRRUS_TAG =~ 'v\d.*' && $CIRRUS_USER_PERMISSION == "admin"
-  depends_on: [check, build, test]
+  depends_on: [test]
   <<: *task-template
   finalize_coverage_script: pipx run coveralls --finish
 
@@ -140,6 +140,8 @@ linkcheck_task:
 publish_task:
   name: publish (Linux - 3.10)
   container: {image: "python:3.10-bullseye"}
+  depends_on: [check, build, test]
+  only_if: $CIRRUS_TAG =~ 'v\d.*' && $CIRRUS_USER_PERMISSION == "admin"
   <<: *task-template
   dist_cache: {folder: "dist"}
   env:
