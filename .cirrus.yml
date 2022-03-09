@@ -123,7 +123,6 @@ windows_task:
     - pip install --upgrade certifi
   <<: *task-template
   <<: *test-template
-  depends_on: [check, build, windows_dockerfile]
   env:
     CIRRUS_SHELL: bash
     PATH: ${PATH}:/c/python39:c/python39/Scripts
