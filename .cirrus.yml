@@ -62,7 +62,7 @@ check_task:
   container: {image: "python:3.10-bullseye"}  # most recent => better type support
   <<: *task-template
   check_script:
-    - pipx run pre-commit --all-files --show-diff-on-failure
+    - pipx run pre-commit run --all-files --show-diff-on-failure
     - tox -e typecheck
 
 build_task:
