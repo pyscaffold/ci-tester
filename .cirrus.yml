@@ -26,9 +26,9 @@ env:
   prepare_script:
     - git config --global user.email "you@example.com"
     - git config --global user.name "Your Name"
-  pip_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pip"}
-  pipx_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pipx"}
-  pre_commit_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"}
+  # pip_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pip"}
+  # pipx_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pipx"}
+  # pre_commit_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"}
 
 .test_task_template: &test-template
   alias: test
@@ -36,7 +36,10 @@ env:
   env: &test-env-template
     COVERALLS_PARALLEL: "true"
     COVERALLS_FLAG_NAME: ${CIRRUS_TASK_NAME}
-  dist_cache: {folder: "dist", fingerprint_key: "dist"}
+  dist_cache:
+    folder: "dist"
+    fingerprint_key: "dist"
+    reupload_on_changes: false
   test_script:
     - tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
