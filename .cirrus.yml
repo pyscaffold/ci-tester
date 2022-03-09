@@ -63,7 +63,7 @@ check_task:
   <<: *task-template
   check_script:
     - pipx run pre-commit run --all-files --show-diff-on-failure
-    - tox -e typecheck
+    # - tox -e typecheck
 
 build_task:
   name: build (Linux - 3.10)
