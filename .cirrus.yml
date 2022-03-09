@@ -31,7 +31,6 @@ env:
   pre_commit_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"}
 
 .test_task_template: &test-task-template
-  <<: *task-template
   alias: test
   depends_on: [build]
   env: &test-env-template
@@ -91,15 +90,17 @@ test_task:
     - name: test (Linux - 3.11)
       container: {image: "python:3.11-rc-bullseye"}
       allow_failures: true  # Experimental
+  <<: *task-template
   <<: *test-task-template
 
 conda_task:
   name: test (Linux - Anaconda)
   container: {image: "continuumio/anaconda3:2021.11"}
   env: {USING_CONDA: true}
-  <<: *test-task-template
-  install_tools_script: # Overwrite template
+  <<: *task-template
+  conda_install_script: # Overwrite template
     - conda install -y -c conda-forge pip tox pipx
+  <<: *test-task-template
 
 macos_task:
   name: test (OS X - 3.9)
@@ -107,6 +108,7 @@ macos_task:
   env: {PYTHON_VERSION: 3.9}
   brew_cache: {folder: "$HOME/Library/Caches/Homebrew"}
   install_script: brew install python
+  <<: *task-template
   <<: *test-task-template
 
 windows_task:
@@ -115,6 +117,7 @@ windows_task:
   windows_container:
     dockerfile: ._CIRRUS_CI_FILES_3.9.10_/Dockerfile
     os_version: 2019
+  <<: *task-template
   <<: *test-task-template
   depends_on: [check, build, windows_dockerfile]
   env:
