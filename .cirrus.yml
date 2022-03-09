@@ -131,7 +131,7 @@ windows_task:
   <<: *test-template
   env:
     CIRRUS_SHELL: bash
-    PATH: ${PATH}:/c/python39:/c/python39/Scripts
+    PATH: ${PATH}:/c/Python39:/c/Python39/Scripts
     <<: *test-env-template
 
 finalize_task:
