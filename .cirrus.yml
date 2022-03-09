@@ -38,7 +38,7 @@ env:
     COVERALLS_FLAG_NAME: ${CIRRUS_TASK_NAME}
   dist_cache: {folder: "dist"}
   test_script:
-    - tox --installpkg dist/*.whl -e all -- -n 6 -rfEx --durations 10 --color yes
+    - tox --installpkg dist/*.whl -- -n 6 -rfEx --durations 10 --color yes
   submit_coverage_script:
     - pipx run coverage lcov -o coverage.lcov
     - pipx run coveralls --submit coverage.lcov
@@ -118,7 +118,9 @@ windows_task:
     os_version: 2019
   windows_install_script:
     - choco install -y --no-progress python --version=3.9.10
-    - pip install --upgrade certifi
+    - python -m pip install --upgrade certifi
+    - python -m pip install --upgrade pipx
+    - python -m pipx ensurepath
   <<: *task-template
   <<: *test-template
   env:
