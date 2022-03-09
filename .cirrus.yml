@@ -39,6 +39,8 @@ env:
     fingerprint_key: "dist"
     reupload_on_changes: false
   test_script:
+    - python --version
+    - python -c 'import site; print(site.PREFIXES)'
     - python -m tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
     - python -m coverage lcov -o coverage.lcov
@@ -111,7 +113,8 @@ macos_task:
   <<: *task-template
   <<: *test-template
   env:
-    PATH: "${HOME}/.local/bin:/usr/local/opt/python/libexec/bin:${PATH}"
+    PYTHON_VERSION: 3.9
+    PATH: "${HOME}/.local/bin:${HOME}/Library/Python/${PYTHON_VERSION}/bin:/usr/local/opt/python/libexec/bin:${PATH}"
     <<: *test-env-template
 
 windows_task:
@@ -126,7 +129,7 @@ windows_task:
   <<: *test-template
   env:
     CIRRUS_SHELL: bash
-    PATH: ${PATH}:/c/python9:c/python9/Scripts
+    PATH: ${PATH}:/c/python39:/c/python39/Scripts
     <<: *test-env-template
 
 finalize_task:
