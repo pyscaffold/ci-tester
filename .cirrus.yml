@@ -157,6 +157,7 @@ publish_task:
 windows_docker_script_task:  # Only used to generate a Dockerfile
   name: create Dockerfile for Windows (3.9.10)
   alias: windows_dockerfile
+  container: {image: "python:3.10-bullseye"}
   dockerfile_cache:
     folder: ._CIRRUS_CI_FILES_3.9.10_
     populate_script: |
