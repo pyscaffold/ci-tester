@@ -172,4 +172,5 @@ windows_docker_script_task:  # Only used to generate a Dockerfile
           $env:Path += ";c:\python39\Scripts";
           pip install --upgrade certifi; \
           pip install --upgrade pip tox pipx
+      EOS
     fingerprint_script: cat ._CIRRUS_CI_FILES_3.9.10_/Dockerfile
