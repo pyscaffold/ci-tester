@@ -32,6 +32,8 @@ env:
 
 .test_task_template: &test-task-template
   <<: *task-template
+  alias: test
+  depends_on: [build]
   env: &test-env-template
     COVERALLS_PARALLEL: "true"
     COVERALLS_FLAG_NAME: ${CIRRUS_TASK_NAME}
@@ -74,7 +76,6 @@ build_task:
   dist_cache: {folder: dist}  # Upload distribution to be shared with other tasks
 
 test_task:
-  alias: test
   matrix:
     - name: test (Linux - 3.6)
       container: {image: "python:3.6-bullseye"}
@@ -94,7 +95,6 @@ test_task:
 
 conda_task:
   name: test (Linux - Anaconda)
-  alias: test
   container: {image: "continuumio/anaconda3:2021.11"}
   env: {USING_CONDA: true}
   <<: *test-task-template
@@ -103,7 +103,6 @@ conda_task:
 
 macos_task:
   name: test (OS X - 3.9)
-  alias: test
   macos_instance: {image: "big-sur-xcode"}
   env: {PYTHON_VERSION: 3.9}
   brew_cache: {folder: "$HOME/Library/Caches/Homebrew"}
@@ -112,13 +111,12 @@ macos_task:
 
 windows_task:
   name: test (Windows - 3.9.10)
-  alias: test
-  depends_on: [check, build, windows_dockerfile]
   dockerfile_cache: {folder: ._CIRRUS_CI_FILES_3.9.10_}
   windows_container:
     dockerfile: ._CIRRUS_CI_FILES_3.9.10_/Dockerfile
     os_version: 2019
   <<: *test-task-template
+  depends_on: [check, build, windows_dockerfile]
   env:
     CIRRUS_SHELL: bash
     <<: *test-env-template
