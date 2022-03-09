@@ -92,7 +92,8 @@ test_task:
   #   - name: test (Linux - 3.11)
   #     container: {image: "python:3.11-rc-bullseye"}
   #     allow_failures: true  # Experimental
-  <<: [*task-template, *test-template]
+  <<: *task-template
+  <<: *test-template
 
 conda_task:
   name: test (Linux - Anaconda)
@@ -109,7 +110,8 @@ macos_task:
   env: {PYTHON_VERSION: 3.9}
   brew_cache: {folder: "$HOME/Library/Caches/Homebrew"}
   install_script: brew install python
-  <<: [*task-template, *test-template]
+  <<: *task-template
+  <<: *test-template
 
 windows_task:
   name: test (Windows - 3.9.10)
@@ -119,7 +121,8 @@ windows_task:
   windows_install_script:
     - choco install -y --no-progress python --version=3.9.10
     - pip install --upgrade certifi
-  <<: [*task-template, *test-template]
+  <<: *task-template
+  <<: *test-template
   depends_on: [check, build, windows_dockerfile]
   env:
     CIRRUS_SHELL: bash
