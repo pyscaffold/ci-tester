@@ -123,6 +123,8 @@ windows_task:
     image: "cirrusci/windowsservercore:2019"
     os_version: 2019
   windows_install_script:
+    - echo $PATH
+    - ls /
     - choco install -y --no-progress python --version=3.9.10
     - python -m pip install --upgrade certifi
   <<: *task-template
