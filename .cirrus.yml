@@ -38,7 +38,7 @@ env:
     COVERALLS_FLAG_NAME: ${CIRRUS_TASK_NAME}
   dist_cache: {folder: "dist", fingerprint_key: "dist"}
   test_script:
-    - tox --installpkg dist/*.whl -- -n 6 -rfEx --durations 10 --color yes
+    - tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
     - pipx run coverage lcov -o coverage.lcov
     - pipx run coveralls --submit coverage.lcov
