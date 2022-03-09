@@ -21,7 +21,7 @@ env:
 
 .task_template: &task-template
   install_tools_script:
-    - python -m pip install --upgrade pip tox coverage coveralls pre-commit
+    - python3 -m pip install --upgrade pip tox coverage coveralls pre-commit
   prepare_script:
     - git config --global user.email "you@example.com"
     - git config --global user.name "Your Name"
@@ -39,10 +39,10 @@ env:
     fingerprint_key: "dist"
     reupload_on_changes: false
   test_script:
-    - python -m tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
+    - python3 -m tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
-    - python -m coverage lcov -o coverage.lcov
-    - python -m coveralls --submit coverage.lcov
+    - python3 -m coverage lcov -o coverage.lcov
+    - python3 -m coveralls --submit coverage.lcov
 
 # Deep clone script for POSIX environments (required for setuptools-scm)
 .clone_script: &clone |
@@ -63,7 +63,7 @@ check_task:
   container: {image: "python:3.10-bullseye"}  # most recent => better type support
   <<: *task-template
   check_script:
-    - python -m pre_commit run --all-files --show-diff-on-failure
+    - python3 -m pre_commit run --all-files --show-diff-on-failure
     # - tox -e typecheck
 
 build_task:
@@ -72,7 +72,7 @@ build_task:
   container: {image: "python:3.10-bullseye"}
   clone_script: *clone
   <<: *task-template
-  build_script: python -m tox -e clean,build
+  build_script: python3 -m tox -e clean,build
   dist_cache: {folder: "dist", fingerprint_key: "dist"}  # Upload distribution to be shared with other tasks
 
 test_task:
@@ -119,7 +119,7 @@ windows_task:
     os_version: 2019
   windows_install_script:
     - choco install -y --no-progress python --version=3.9.10
-    - python -m pip install --upgrade certifi
+    - python3 -m pip install --upgrade certifi
   <<: *task-template
   <<: *test-template
   env:
@@ -131,7 +131,7 @@ finalize_task:
   container: {image: "python:3.10-bullseye"}
   depends_on: [test]
   <<: *task-template
-  finalize_coverage_script: python -m coveralls --finish
+  finalize_coverage_script: python3 -m coveralls --finish
 
 linkcheck_task:
   name: linkcheck (Linux - 3.10)
@@ -139,7 +139,7 @@ linkcheck_task:
   depends_on: [finalize]
   allow_failures: true
   <<: *task-template
-  linkcheck_script: python -m tox -e linkcheck -- -q
+  linkcheck_script: python3 -m tox -e linkcheck -- -q
 
 publish_task:
   name: publish (Linux - 3.10)
@@ -154,4 +154,4 @@ publish_task:
     TWINE_PASSWORD: $PYPI_TOKEN  # https://cirrus-ci.org/guide/writing-tasks/#encrypted-variables
   publish_script:
     - ls dist/*
-    - python -m tox -e publish
+    - python3 -m tox -e publish
