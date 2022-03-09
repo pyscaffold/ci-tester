@@ -9,7 +9,6 @@ env:
   LC_ALL: C.UTF-8
   LANG: C.UTF-8
   PIP_CACHE_DIR: ${CIRRUS_WORKING_DIR}/.cache/pip
-  PIPX_HOME: ${CIRRUS_WORKING_DIR}/.cache/pipx
   PRE_COMMIT_HOME: ${CIRRUS_WORKING_DIR}/.cache/pre-commit
   # Coveralls configuration
   CI_NAME: cirrus-ci
@@ -22,12 +21,11 @@ env:
 
 .task_template: &task-template
   install_tools_script:
-    - pip install --upgrade pip tox pipx
+    - python -m pip install --upgrade pip tox coverage coveralls pre-commit
   prepare_script:
     - git config --global user.email "you@example.com"
     - git config --global user.name "Your Name"
   # pip_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pip"}
-  # pipx_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pipx"}
   # pre_commit_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"}
 
 .test_task_template: &test-template
@@ -41,10 +39,10 @@ env:
     fingerprint_key: "dist"
     reupload_on_changes: false
   test_script:
-    - tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
+    - python -m tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
-    - pipx run coverage lcov -o coverage.lcov
-    - pipx run coveralls --submit coverage.lcov
+    - python -m coverage lcov -o coverage.lcov
+    - python -m coveralls --submit coverage.lcov
 
 # Deep clone script for POSIX environments (required for setuptools-scm)
 .clone_script: &clone |
@@ -65,7 +63,7 @@ check_task:
   container: {image: "python:3.10-bullseye"}  # most recent => better type support
   <<: *task-template
   check_script:
-    - pipx run pre-commit run --all-files --show-diff-on-failure
+    - python -m pre-commit run --all-files --show-diff-on-failure
     # - tox -e typecheck
 
 build_task:
@@ -74,7 +72,7 @@ build_task:
   container: {image: "python:3.10-bullseye"}
   clone_script: *clone
   <<: *task-template
-  build_script: tox -e clean,build
+  build_script: python -m tox -e clean,build
   dist_cache: {folder: "dist", fingerprint_key: "dist"}  # Upload distribution to be shared with other tasks
 
 test_task:
@@ -102,7 +100,7 @@ conda_task:
   env: {USING_CONDA: true}
   <<: *task-template
   conda_install_script: # Overwrite template
-    - conda install -y -c conda-forge pip tox pipx
+    - conda install -y -c conda-forge pip tox coverage coveralls pre-commit
   <<: *test-template
 
 macos_task:
@@ -122,8 +120,6 @@ windows_task:
   windows_install_script:
     - choco install -y --no-progress python --version=3.9.10
     - python -m pip install --upgrade certifi
-    - python -m pip install --upgrade pipx
-    - python -m pipx ensurepath
   <<: *task-template
   <<: *test-template
   env:
@@ -135,7 +131,7 @@ finalize_task:
   container: {image: "python:3.10-bullseye"}
   depends_on: [test]
   <<: *task-template
-  finalize_coverage_script: pipx run coveralls --finish
+  finalize_coverage_script: python -m coveralls --finish
 
 linkcheck_task:
   name: linkcheck (Linux - 3.10)
@@ -158,4 +154,4 @@ publish_task:
     TWINE_PASSWORD: $PYPI_TOKEN  # https://cirrus-ci.org/guide/writing-tasks/#encrypted-variables
   publish_script:
     - ls dist/*
-    - tox -e publish
+    - python -m tox -e publish
