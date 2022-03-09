@@ -30,7 +30,7 @@ env:
   pipx_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pipx"}
   pre_commit_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"}
 
-.test_task_template: &test-task-template
+.test_task_template: &test-template
   alias: test
   depends_on: [build]
   env: &test-env-template
@@ -90,8 +90,7 @@ test_task:
     - name: test (Linux - 3.11)
       container: {image: "python:3.11-rc-bullseye"}
       allow_failures: true  # Experimental
-  <<: *task-template
-  <<: *test-task-template
+  <<: [*task-template, *test-template]
 
 conda_task:
   name: test (Linux - Anaconda)
@@ -100,7 +99,7 @@ conda_task:
   <<: *task-template
   conda_install_script: # Overwrite template
     - conda install -y -c conda-forge pip tox pipx
-  <<: *test-task-template
+  <<: *test-template
 
 macos_task:
   name: test (OS X - 3.9)
@@ -108,20 +107,21 @@ macos_task:
   env: {PYTHON_VERSION: 3.9}
   brew_cache: {folder: "$HOME/Library/Caches/Homebrew"}
   install_script: brew install python
-  <<: *task-template
-  <<: *test-task-template
+  <<: [*task-template, *test-template]
 
 windows_task:
   name: test (Windows - 3.9.10)
-  dockerfile_cache: {folder: ._CIRRUS_CI_FILES_3.9.10_}
   windows_container:
-    dockerfile: ._CIRRUS_CI_FILES_3.9.10_/Dockerfile
+    image: "cirrusci/windowsservercore:2019"
     os_version: 2019
-  <<: *task-template
-  <<: *test-task-template
+  windows_install_script:
+    - choco install -y --no-progress python --version=3.9.10
+    - pip install --upgrade certifi
+  <<: [*task-template, *test-template]
   depends_on: [check, build, windows_dockerfile]
   env:
     CIRRUS_SHELL: bash
+    PATH: ${PATH}:/c/python39:c/python39/Scripts
     <<: *test-env-template
 
 finalize_task:
@@ -152,25 +152,3 @@ publish_task:
   publish_script:
     - ls dist/*
     - tox -e publish
-
-# ---- Helpers ----
-
-windows_docker_script_task:  # Only used to generate a Dockerfile
-  name: create Dockerfile for Windows (3.9.10)
-  alias: windows_dockerfile
-  container: {image: "python:3.10-bullseye"}
-  dockerfile_cache:
-    folder: ._CIRRUS_CI_FILES_3.9.10_
-    populate_script: |
-      mkdir ._CIRRUS_CI_FILES_3.9.10_
-      cat >> ._CIRRUS_CI_FILES_3.9.10_/Dockerfile <<EOS
-      FROM cirrusci/windowsservercore:2019
-      RUN powershell -NoLogo -NoProfile -Command \
-          choco install -y --no-progress python --version=3.9.10; \
-          refreshenv; \
-          $env:Path += ";c:\python39"; \
-          $env:Path += ";c:\python39\Scripts";
-          pip install --upgrade certifi; \
-          pip install --upgrade pip tox pipx
-      EOS
-    fingerprint_script: cat ._CIRRUS_CI_FILES_3.9.10_/Dockerfile
