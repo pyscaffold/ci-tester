@@ -75,23 +75,21 @@ build_task:
   dist_cache: {folder: dist}  # Upload distribution to be shared with other tasks
 
 test_task:
-  name: test (Linux - 3.7)
-  container: {image: "python:3.7-bullseye"}
-  # matrix:
-  #   - name: test (Linux - 3.6)
-  #     container: {image: "python:3.6-bullseye"}
-  #     allow_failures: true  # EoL
-  #   - name: test (Linux - 3.7)
-  #     container: {image: "python:3.7-bullseye"}
-  #   - name: test (Linux - 3.8)
-  #     container: {image: "python:3.8-bullseye"}
-  #   - name: test (Linux - 3.9)
-  #     container: {image: "python:3.9-bullseye"}
-  #   - name: test (Linux - 3.10)
-  #     container: {image: "python:3.10-bullseye"}
-  #   - name: test (Linux - 3.11)
-  #     container: {image: "python:3.11-rc-bullseye"}
-  #     allow_failures: true  # Experimental
+  matrix:
+    - name: test (Linux - 3.6)
+      container: {image: "python:3.6-bullseye"}
+      allow_failures: true  # EoL
+    - name: test (Linux - 3.7)
+      container: {image: "python:3.7-bullseye"}
+    - name: test (Linux - 3.8)
+      container: {image: "python:3.8-bullseye"}
+    - name: test (Linux - 3.9)
+      container: {image: "python:3.9-bullseye"}
+    - name: test (Linux - 3.10)
+      container: {image: "python:3.10-bullseye"}
+    - name: test (Linux - 3.11)
+      container: {image: "python:3.11-rc-bullseye"}
+      allow_failures: true  # Experimental
   <<: *task-template
   <<: *test-template
 
