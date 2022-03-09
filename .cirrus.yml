@@ -113,25 +113,15 @@ macos_task:
 
 windows_task:
   name: test (Windows - 3.9.10)
-  dockerfile_from_file:
-    path: ._CIRRUS_CI_CONTAINER_FOR_RUNTIME_
-    variable_name: _CIRRUS_CI_CONTAINER_FOR_RUNTIME_
+  dockerfile_cache: {folder: ._CIRRUS_CI_FILES_3.9.10_}
   windows_container:
-    dockerfile: ._CIRRUS_CI_CONTAINER_FOR_RUNTIME_
+    dockerfile: ._CIRRUS_CI_FILES_3.9.10_/Dockerfile
     os_version: 2019
   <<: *task-template
   <<: *test-task-template
+  depends_on: [check, build, windows_dockerfile]
   env:
     CIRRUS_SHELL: bash
-    _CIRRUS_CI_CONTAINER_FOR_RUNTIME_: |
-      FROM cirrusci/windowsservercore:2019
-      RUN powershell -NoLogo -NoProfile -Command \
-          choco install -y --no-progress python --version=3.9.10; \
-          refreshenv; \
-          $env:Path += ";c:\python39"; \
-          $env:Path += ";c:\python39\Scripts";
-          pip install --upgrade certifi; \
-          pip install --upgrade pip tox pipx
     <<: *test-env-template
 
 finalize_task:
@@ -162,3 +152,24 @@ publish_task:
   publish_script:
     - ls dist/*
     - tox -e publish
+
+# ---- Helpers ----
+
+windows_docker_script_task:  # Only used to generate a Dockerfile
+  name: create Dockerfile for Windows (3.9.10)
+  alias: windows_dockerfile
+  container: {image: "python:3.10-bullseye"}
+  dockerfile_cache:
+    folder: ._CIRRUS_CI_FILES_3.9.10_
+    populate_script: |
+      mkdir ._CIRRUS_CI_FILES_3.9.10_
+      cat >> ._CIRRUS_CI_FILES_3.9.10_/Dockerfile <<EOS
+      FROM cirrusci/windowsservercore:2019
+      RUN powershell -NoLogo -NoProfile -Command \
+          choco install -y --no-progress python --version=3.9.10; \
+          refreshenv; \
+          $env:Path += ";c:\python39"; \
+          $env:Path += ";c:\python39\Scripts";
+          pip install --upgrade certifi; \
+          pip install --upgrade pip tox pipx
+    fingerprint_script: cat ._CIRRUS_CI_FILES_3.9.10_/Dockerfile
