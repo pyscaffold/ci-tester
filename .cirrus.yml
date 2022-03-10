@@ -47,8 +47,8 @@ env:
   test_script:
     - tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
-    - coverage lcov -o coverage.lcov
-    - coveralls --submit coverage.lcov
+    - coverage xml -o coverage.xml
+    - coveralls --submit coverage.xml
 
 # Deep clone script for POSIX environments (required for setuptools-scm)
 .clone_script: &clone |
