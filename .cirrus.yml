@@ -22,6 +22,7 @@ env:
 .task_template: &task-template
   install_tools_script:
     # Help debugging
+    - which python
     - python --version
     - python -c 'import site; print(site.PREFIXES)'
     - python -m site --user-base --user-site
