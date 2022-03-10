@@ -21,6 +21,11 @@ env:
 
 .task_template: &task-template
   install_tools_script:
+    # Help debugging
+    - python --version
+    - python -c 'import site; print(site.PREFIXES)'
+    - python -m site --user-base --user-site
+    # Actual tool installation
     - pip install --upgrade pip tox coverage coveralls pre-commit
   prepare_script:
     - git config --global user.email "you@example.com"
@@ -39,10 +44,6 @@ env:
     fingerprint_key: "dist"
     reupload_on_changes: false
   test_script:
-    # Help debugging
-    - python --version
-    - python -c 'import site; print(site.PREFIXES)'
-    # Actual tests
     - tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
     - coverage lcov -o coverage.lcov
