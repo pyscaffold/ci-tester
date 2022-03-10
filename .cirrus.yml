@@ -133,7 +133,7 @@ windows_task:
     # Set Windows encoding to UTF-8
     # - ps: New-ItemProperty -Path "HKCU:\Software\Microsoft\Command Processor" -Name "Autorun" -Value "@chcp 65001>nul" -PropertyType SZ -Force
     # - reg ADD 'HKEY_CURRENT_USER\Software\Microsoft\Command Processor' /v Autorun /t REG_SZ /d "@chcp 65001>nul" /f
-    - choco install -y --no-progress python --version=3.9.10
+    - choco install -y --no-progress python3 --version=3.9.10 --params "/NoLockdown"
     - pip install --upgrade certifi
   <<: *task-template
   <<: *test-template
