@@ -100,13 +100,13 @@ test_task:
   <<: *task-template
   <<: *test-template
 
-conda_task:
-  name: test (Linux - Anaconda)
-  container: {image: "continuumio/anaconda3:2021.11"}
+mamba_task:
+  name: test (Linux - mamba)
+  container: {image: "condaforge/mambaforge"}
   env: {USING_CONDA: true}
   <<: *task-template
   conda_install_script: # Overwrite template
-    - conda install -y -c conda-forge pip tox coverage coveralls pre-commit
+    - mamba install -y pip tox coverage coveralls pre-commit
   <<: *test-template
 
 macos_task:
