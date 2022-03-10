@@ -128,9 +128,11 @@ windows_task:
     os_version: 2019
   windows_install_script:
     # Activate long file paths to avoid some errors
-    - reg ADD 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem' /v LongPathsEnabled /t REG_DWORD /d 1 /f
+    - ps: New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+    # - reg ADD 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem' /v LongPathsEnabled /t REG_DWORD /d 1 /f
     # Set Windows encoding to UTF-8
-    - reg ADD 'HKEY_CURRENT_USER\Software\Microsoft\Command Processor' /v Autorun /t REG_SZ /d "@chcp 65001>nul" /f
+    - ps: New-ItemProperty -Path "HKCU:\Software\Microsoft\Command Processor" -Name "Autorun" -Value "@chcp 65001>nul" -PropertyType SZ -Force
+    # - reg ADD 'HKEY_CURRENT_USER\Software\Microsoft\Command Processor' /v Autorun /t REG_SZ /d "@chcp 65001>nul" /f
     - choco install -y --no-progress python --version=3.9.10
     - pip install --upgrade certifi
   <<: *task-template
