@@ -27,7 +27,8 @@ env:
     - python -c 'import site; print(site.PREFIXES)'
     - python -m site --user-base --user-site
     # Actual tool installation
-    - pip install --upgrade pip tox coverage coveralls pre-commit
+    - python -m pip install --upgrade pip
+    - pip install --upgrade tox coverage coveralls pre-commit
   prepare_script:
     - git config --global user.email "you@example.com"
     - git config --global user.name "Your Name"
