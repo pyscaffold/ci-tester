@@ -18,6 +18,8 @@ env:
   CI_PULL_REQUEST: ${CIRRUS_PR}
   CI_BUILD_NUMBER: ${CIRRUS_BUILD_ID}
   CI_BUILD_URL: https://cirrus-ci.com/build/${CIRRUS_BUILD_ID}
+  COVERALLS_PARALLEL: "true"
+  COVERALLS_FLAG_NAME: ${CIRRUS_TASK_NAME}
 
 # ---- Templates ----
 
@@ -27,9 +29,7 @@ env:
     - python --version
     - which pip
     - pip --version
-  install_tools_script:
-    - python -m pip install --upgrade pip tox coverage coveralls pre-commit
-  prepare_script:
+  prepare_script:  # avoid git failing with setuptools-scm
     - git config --global user.email "you@example.com"
     - git config --global user.name "Your Name"
   pip_cache:
@@ -47,18 +47,17 @@ env:
       - cat .pre-commit-config.yaml
     reupload_on_changes: true
 
-.test_task_template: &test-template
+.test_template: &test-template
+  # Assumes pip, tox, and pipx are installed via OS/pip
   alias: test
   depends_on: [build]
-  env: &test-env-template
-    COVERALLS_PARALLEL: "true"
-    COVERALLS_FLAG_NAME: ${CIRRUS_TASK_NAME}
+  <<: *task-template
   dist_cache: {folder: "dist", fingerprint_key: "dist"}  # download
   test_script:
     - tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
-    - coverage xml -o coverage.xml
-    - coveralls --submit coverage.xml
+    - pipx run coverage xml -o coverage.xml
+    - pipx run coveralls --submit coverage.xml
 
 # Deep clone script for POSIX environments (required for setuptools-scm)
 .clone_script: &clone |
@@ -78,6 +77,7 @@ check_task:
   alias: check
   container: {image: "python:3.10-bullseye"}  # most recent => better type support
   <<: *task-template
+  install_script: pip install pre-commit
   check_script:
     - pre-commit run --all-files --show-diff-on-failure
     # - tox -e typecheck
@@ -88,6 +88,7 @@ build_task:
   container: {image: "python:3.10-bullseye"}
   clone_script: *clone
   <<: *task-template
+  install_script: pip install tox
   build_script: tox -e clean,build
   dist_cache:  # build once and upload to be used by other tasks
     folder: "dist"
@@ -110,36 +111,33 @@ linux_task:
     - name: test (Linux - 3.11)
       container: {image: "python:3.11-rc-bullseye"}
       allow_failures: true  # Experimental
-  <<: *task-template
+  install_script: &install-via-pip
+    - python -m pip install --upgrade pip pipx tox
   <<: *test-template
 
 mamba_task:
   name: test (Linux - mamba)
   container: {image: "condaforge/mambaforge"}
-  <<: *task-template
   install_script:  # Overwrite template
-    - mamba install -y pip tox coverage coveralls pre-commit
+    - mamba install -y pip tox pipx
   <<: *test-template
 
 macos_task:
   name: test (OS X - 3.9)
   macos_instance: {image: "big-sur-xcode"}
   brew_cache: {folder: "$HOME/Library/Caches/Homebrew"}
-  install_script: brew install python
-  <<: *task-template
-  <<: *test-template
+  install_script: brew install python pipx tox
   env:
     PATH: "${HOME}/.local/bin:/usr/local/opt/python/libexec/bin:${PATH}"
-    <<: *test-env-template
+  <<: *test-template
 
 freebsd_task:
   name: test (freebsd - 3.8)
   freebsd_instance: {image_family: freebsd-13-0}
   install_script:
     - pkg remove -y python lang/python
-    - pkg install -y git python38 py38-pip py38-gdbm py38-sqlite3
+    - pkg install -y git python38 py38-pip py38-gdbm py38-sqlite3 py38-tox py38-pipx
     - ln -s /usr/local/bin/python3.8 /usr/local/bin/python
-  <<: *task-template
   <<: *test-template
 
 windows_task:
@@ -147,6 +145,9 @@ windows_task:
   windows_container:
     image: "cirrusci/windowsservercore:2019"
     os_version: 2019
+  env:
+    CIRRUS_SHELL: bash
+    PATH: ${PATH}:/c/Python39:/c/Python39/Scripts
   install_script:
     # Activate long file paths to avoid some errors
     - ps: New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
@@ -154,17 +155,14 @@ windows_task:
     # - REG ADD 'HKEY_CURRENT_USER\Software\Microsoft\Command Processor' /v Autorun /t REG_SZ /d "@chcp 65001>nul" /f
     - choco install -y --no-progress python3 --version=3.9.10 --params "/NoLockdown"
     - pip install --upgrade certifi
-  <<: *task-template
+    - python -m pip install -U pip tox pipx
   <<: *test-template
-  env:
-    CIRRUS_SHELL: bash
-    PATH: ${PATH}:/c/Python39:/c/Python39/Scripts
-    <<: *test-env-template
 
 finalize_task:
   container: {image: "python:3.10-bullseye"}
   depends_on: [test]
   <<: *task-template
+  install_script: pip install coveralls
   finalize_coverage_script: coveralls --finish
 
 linkcheck_task:
@@ -173,6 +171,7 @@ linkcheck_task:
   depends_on: [finalize]
   allow_failures: true
   <<: *task-template
+  install_script: pip install tox
   linkcheck_script: tox -e linkcheck -- -q
 
 publish_task:
@@ -187,6 +186,7 @@ publish_task:
     TWINE_USERNAME: __token__
     TWINE_PASSWORD: $PYPI_TOKEN
     # See: https://cirrus-ci.org/guide/writing-tasks/#encrypted-variables
+  install_script: pip install tox
   publish_script:
     - ls dist/*
     - tox -e publish
