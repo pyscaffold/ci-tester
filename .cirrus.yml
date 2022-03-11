@@ -120,7 +120,7 @@ macos_task:
   <<: *test-template
   env:
     PYTHON_VERSION: 3.9
-    PATH: "${HOME}/.local/bin:${HOME}/Library/Python/${PYTHON_VERSION}/bin:/usr/local/opt/python/libexec/bin:${PATH}"
+    PATH: "${HOME}/.local/bin:/usr/local/opt/python/libexec/bin:${PATH}"
     <<: *test-env-template
 
 windows_task:
@@ -139,7 +139,7 @@ windows_task:
   <<: *test-template
   env:
     CIRRUS_SHELL: bash
-    PATH: ${PATH}:/c/Python39:/c/Python39/Scripts:/c/Users/ContainerAdministrator/AppData/Roaming/Python/Scripts
+    PATH: ${PATH}:/c/Python39:/c/Python39/Scripts
     <<: *test-env-template
 
 finalize_task:
