@@ -21,19 +21,21 @@ env:
 
 .task_template: &task-template
   install_tools_script:
-    # Help debugging
-    - which python
-    - python --version
-    - python -c 'import site; print(site.PREFIXES)'
-    - python -m site --user-base --user-site
-    # Actual tool installation
-    - python -m pip install --upgrade pip
-    - pip install --upgrade tox coverage coveralls pre-commit
+    - python --version  # debug information
+    - python -m pip install --upgrade pip tox coverage coveralls pre-commit
   prepare_script:
     - git config --global user.email "you@example.com"
     - git config --global user.name "Your Name"
-  # pip_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pip"}
-  # pre_commit_cache: {folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"}
+  pip_cache:
+    folder: "${CIRRUS_WORKING_DIR}/.cache/pip"
+    fingerprint_script: echo "pip-${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
+    reupload_on_changes: true
+  pre_commit_cache:
+    folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"
+    fingerprint_script:
+      - echo "pre-commit-${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
+      - cat .pre-commit-config.yaml
+    reupload_on_changes: true
 
 .test_task_template: &test-template
   alias: test
@@ -127,13 +129,11 @@ windows_task:
   windows_container:
     image: "cirrusci/windowsservercore:2019"
     os_version: 2019
-  windows_install_script:
+  install_script:
     # Activate long file paths to avoid some errors
     - ps: New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
-    # - reg ADD 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem' /v LongPathsEnabled /t REG_DWORD /d 1 /f
-    # Set Windows encoding to UTF-8
-    # - ps: New-ItemProperty -Path "HKCU:\Software\Microsoft\Command Processor" -Name "Autorun" -Value "@chcp 65001>nul" -PropertyType SZ -Force
-    # - reg ADD 'HKEY_CURRENT_USER\Software\Microsoft\Command Processor' /v Autorun /t REG_SZ /d "@chcp 65001>nul" /f
+    # If you use cmd instead of bash, the following command can change the encoding to UTF-8:
+    # - REG ADD 'HKEY_CURRENT_USER\Software\Microsoft\Command Processor' /v Autorun /t REG_SZ /d "@chcp 65001>nul" /f
     - choco install -y --no-progress python3 --version=3.9.10 --params "/NoLockdown"
     - pip install --upgrade certifi
   <<: *task-template
