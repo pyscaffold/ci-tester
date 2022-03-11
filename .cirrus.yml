@@ -126,6 +126,8 @@ freebsd_task:
   name: test (freebsd - 3.8)
   freebsd_instance: {image_family: freebsd-13-0}
   install_script:
+    - pkg remove python
+    - pkg autoremove -y
     - pkg install -y python38 py38-pip
     - ln -s /usr/local/bin/python3.8 /usr/local/bin/python
     - ln -s /usr/local/bin/pip-3.8 /usr/local/bin/pip
