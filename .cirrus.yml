@@ -72,7 +72,7 @@ check_task:
   <<: *task-template
   install_script: pip install pre-commit
   check_script:
-    - pre-commit run --all-files --show-diff-on-failure
+    - pre-commit run --all-files --show-diff-on-failure --color always
     # - tox -e typecheck
 
 build_task:
