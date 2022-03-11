@@ -114,7 +114,7 @@ mamba_task:
   <<: *test-template
 
 macos_task:
-  name: test (OS X - brew)
+  name: test (macOS - brew)
   macos_instance: {image: "big-sur-xcode"}
   brew_cache: {folder: "$HOME/Library/Caches/Homebrew"}
   install_script: brew install python tox pipx
