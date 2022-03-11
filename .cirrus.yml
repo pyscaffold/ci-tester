@@ -43,10 +43,7 @@ env:
   env: &test-env-template
     COVERALLS_PARALLEL: "true"
     COVERALLS_FLAG_NAME: ${CIRRUS_TASK_NAME}
-  dist_cache:
-    folder: "dist"
-    fingerprint_key: "dist"
-    reupload_on_changes: false
+  dist_cache: {folder: "dist", fingerprint_key: "dist"}  # download
   test_script:
     - tox --installpkg dist/*.whl -- -rfEx --durations 10 --color yes
   submit_coverage_script:
@@ -82,9 +79,12 @@ build_task:
   clone_script: *clone
   <<: *task-template
   build_script: tox -e clean,build
-  dist_cache: {folder: "dist", fingerprint_key: "dist"}  # Upload distribution to be shared with other tasks
+  dist_cache:  # build once and upload to be used by other tasks
+    folder: "dist"
+    fingerprint_key: "dist"
+    reupload_on_changes: true
 
-test_task:
+linux_task:
   matrix:
     - name: test (Linux - 3.6)
       container: {image: "python:3.6-bullseye"}
@@ -106,9 +106,8 @@ test_task:
 mamba_task:
   name: test (Linux - mamba)
   container: {image: "condaforge/mambaforge"}
-  env: {USING_CONDA: true}
   <<: *task-template
-  conda_install_script: # Overwrite template
+  install_script: # Overwrite template
     - mamba install -y pip tox coverage coveralls pre-commit
   <<: *test-template
 
@@ -163,11 +162,12 @@ publish_task:
   depends_on: [check, build, test]
   only_if: $CIRRUS_TAG =~ 'v\d.*' && $CIRRUS_USER_PERMISSION == "admin"
   <<: *task-template
-  dist_cache: {folder: "dist", fingerprint_key: "dist"}
+  dist_cache: {folder: "dist", fingerprint_key: "dist"}  # download
   env:
     TWINE_REPOSITORY: pypi
     TWINE_USERNAME: __token__
-    TWINE_PASSWORD: $PYPI_TOKEN  # https://cirrus-ci.org/guide/writing-tasks/#encrypted-variables
+    TWINE_PASSWORD: $PYPI_TOKEN
+    # See: https://cirrus-ci.org/guide/writing-tasks/#encrypted-variables
   publish_script:
     - ls dist/*
     - tox -e publish
