@@ -107,7 +107,7 @@ mamba_task:
   name: test (Linux - mamba)
   container: {image: "condaforge/mambaforge"}
   <<: *task-template
-  install_script: # Overwrite template
+  install_script:  # Overwrite template
     - mamba install -y pip tox coverage coveralls pre-commit
   <<: *test-template
 
@@ -119,7 +119,6 @@ macos_task:
   <<: *task-template
   <<: *test-template
   env:
-    PYTHON_VERSION: 3.9
     PATH: "${HOME}/.local/bin:/usr/local/opt/python/libexec/bin:${PATH}"
     <<: *test-env-template
 
