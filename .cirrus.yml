@@ -68,7 +68,7 @@ env:
 check_task:
   name: check (Linux - 3.10)
   alias: check
-  container: {image: "python:3.10-bullseye"}  # most recent => better type support
+  container: {image: "python:3.10-bullseye"}  # most recent => better types
   <<: *task-template
   install_script: pip install pre-commit
   check_script:
