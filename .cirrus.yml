@@ -123,6 +123,12 @@ macos_task:
     PATH: "${HOME}/.local/bin:/usr/local/opt/python/libexec/bin:${PATH}"
     <<: *test-env-template
 
+freebsd_task:
+  freebsd_instance: {image_family: freebsd-13-0}
+  install_script: pkg install -y python
+  <<: *task-template
+  <<: *test-template
+
 windows_task:
   name: test (Windows - 3.9.10)
   windows_container:
