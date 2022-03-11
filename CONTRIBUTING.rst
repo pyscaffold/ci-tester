@@ -314,8 +314,8 @@ on PyPI_, the following steps can be used to release a new version for
 .. |the repository service| replace:: GitHub
 .. |contribute button| replace:: "Create pull request"
 
-.. _repository: https://github.com/<USERNAME>/ci-tester
-.. _issue tracker: https://github.com/<USERNAME>/ci-tester/issues
+.. _repository: https://github.com/pyscaffold/ci-tester
+.. _issue tracker: https://github.com/pyscaffold/ci-tester/issues
 .. <-- end -->
 
 
