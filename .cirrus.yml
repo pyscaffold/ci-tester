@@ -24,10 +24,9 @@ env:
 
 .task_template: &task-template
   debug_information_script:
-    - which python
-    - python --version
-    - which pip
-    - pip --version
+    - echo "$(which python) -- $(python -VV)"
+    - echo "$(which pip) -- $(pip -VV)"
+    - python -c 'import os, sys; print(os.name, sys.platform, sys.abiflags)'
   prepare_script:  # avoid git failing with setuptools-scm
     - git config --global user.email "you@example.com"
     - git config --global user.name "Your Name"
@@ -47,7 +46,7 @@ env:
     reupload_on_changes: true
 
 .test_template: &test-template
-  # Assumes pip, tox, and pipx are installed via OS/pip
+  # Requires pip, tox, and pipx to be installed via OS/pip
   alias: test
   depends_on: [build]
   <<: *task-template
@@ -150,8 +149,6 @@ windows_task:
   install_script:
     # Activate long file paths to avoid some errors
     - ps: New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
-    # If you use cmd instead of bash, the following command can change the encoding to UTF-8:
-    # - REG ADD 'HKEY_CURRENT_USER\Software\Microsoft\Command Processor' /v Autorun /t REG_SZ /d "@chcp 65001>nul" /f
     - choco install -y --no-progress python3 --version=3.9.10 --params "/NoLockdown"
     - pip install --upgrade certifi
     - python -m pip install -U pip tox pipx
