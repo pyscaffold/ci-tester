@@ -5,7 +5,6 @@
 ---
 # ---- Default values to be merged into tasks ----
 
-auto_cancellation: false
 env:
   LC_ALL: C.UTF-8
   LANG: C.UTF-8
@@ -111,7 +110,7 @@ linux_task:
     - name: test (Linux - 3.11)
       container: {image: "python:3.11-rc-bullseye"}
       allow_failures: true  # Experimental
-  install_script: &install-via-pip
+  install_script:
     - python -m pip install --upgrade pip pipx tox
   <<: *test-template
 
