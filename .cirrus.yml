@@ -133,7 +133,8 @@ freebsd_task:
   freebsd_instance: {image_family: freebsd-13-0}
   install_script:
     - pkg remove -y python lang/python
-    - pkg install -y git python-3.8_3,2 devel/py-pip
+    - pkg install -y git python38 py38-pip
+    - ln -s /usr/local/bin/python3.8 /usr/local/bin/python
   <<: *task-template
   <<: *test-template
 
