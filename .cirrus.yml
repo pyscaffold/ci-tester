@@ -31,13 +31,11 @@ env:
     - git config --global user.name "Your Name"
   pip_cache:
     folder: "${CIRRUS_WORKING_DIR}/.cache/pip"
-    fingerprint_script: echo "pip-${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
+    fingerprint_script: echo "${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
     reupload_on_changes: true
   pre_commit_cache:
     folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"
-    fingerprint_script:
-      - echo "pre-commit-${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
-      - cat .pre-commit-config.yaml
+    fingerprint_script: echo "${CIRRUS_OS}-${CIRRUS_TASK_NAME}" | cat - .pre-commit-config.yaml
     reupload_on_changes: true
 
 .test_template: &test-template
