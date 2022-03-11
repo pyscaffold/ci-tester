@@ -26,7 +26,7 @@ env:
   debug_information_script:
     - echo "$(which python) -- $(python -VV)"
     - echo "$(which pip) -- $(pip -VV)"
-    - python -c 'import os, sys; print(os.name, sys.platform, sys.abiflags)'
+    - python -c 'import os, sys; print(os.name, sys.platform, getattr(sys, "abiflags", None))'
   prepare_script:  # avoid git failing with setuptools-scm
     - git config --global user.email "you@example.com"
     - git config --global user.name "Your Name"
@@ -114,7 +114,7 @@ linux_task:
   <<: *test-template
 
 mamba_task:
-  name: test (Linux - mamba)
+  name: test (Linux - mambaforge)
   container: {image: "condaforge/mambaforge"}
   install_script:  # Overwrite template
     - mamba install -y pip tox pipx
