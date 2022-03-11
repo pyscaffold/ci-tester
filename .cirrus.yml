@@ -4,11 +4,13 @@
 
 ---
 # ---- Default values to be merged into tasks ----
+
 auto_cancellation: false
 env:
   LC_ALL: C.UTF-8
   LANG: C.UTF-8
   PIP_CACHE_DIR: ${CIRRUS_WORKING_DIR}/.cache/pip
+  PIPX_HOME: ${CIRRUS_WORKING_DIR}/.cache/pipx
   PRE_COMMIT_HOME: ${CIRRUS_WORKING_DIR}/.cache/pre-commit
   # Coveralls configuration
   CI_NAME: cirrus-ci
@@ -29,6 +31,10 @@ env:
   pip_cache:
     folder: "${CIRRUS_WORKING_DIR}/.cache/pip"
     fingerprint_script: echo "pip-${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
+    reupload_on_changes: true
+  pipx_cache:
+    folder: "${CIRRUS_WORKING_DIR}/.cache/pipx"
+    fingerprint_script: echo "pipx-${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
     reupload_on_changes: true
   pre_commit_cache:
     folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"
@@ -126,13 +132,8 @@ freebsd_task:
   name: test (freebsd - 3.8)
   freebsd_instance: {image_family: freebsd-13-0}
   install_script:
-    - pkg remove python
-    - pkg autoremove -y
-    - pkg install -y python38 py38-pip
-    - ln -s /usr/local/bin/python3.8 /usr/local/bin/python
-    - ln -s /usr/local/bin/pip-3.8 /usr/local/bin/pip
-    - which python
-    - echo $PATH
+    - pkg remove -y python lang/python
+    - pkg install -y git python-3.8_3,2 devel/py-pip
   <<: *task-template
   <<: *test-template
 
