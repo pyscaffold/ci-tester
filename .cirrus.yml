@@ -114,12 +114,12 @@ mamba_task:
   <<: *test-template
 
 macos_task:
-  name: test (OS X - 3.9)
+  name: test (OS X - brew)
   macos_instance: {image: "big-sur-xcode"}
   brew_cache: {folder: "$HOME/Library/Caches/Homebrew"}
   install_script: brew install python tox pipx
   env:
-    PATH: "${HOME}/.local/bin:/usr/local/opt/python/libexec/bin:${PATH}"
+    PATH: "/usr/local/opt/python/libexec/bin:${PATH}"
   <<: *test-template
 
 freebsd_task:
