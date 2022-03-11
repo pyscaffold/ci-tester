@@ -105,7 +105,7 @@ linux_task:
       container: {image: "python:3.11-rc-bullseye"}
       allow_failures: true  # Experimental
   install_script:
-    - python -m pip install --upgrade pip pipx tox
+    - python -m pip install --upgrade pip tox pipx
   <<: *test-template
 
 mamba_task:
@@ -119,7 +119,7 @@ macos_task:
   name: test (OS X - 3.9)
   macos_instance: {image: "big-sur-xcode"}
   brew_cache: {folder: "$HOME/Library/Caches/Homebrew"}
-  install_script: brew install python pipx tox
+  install_script: brew install python tox pipx
   env:
     PATH: "${HOME}/.local/bin:/usr/local/opt/python/libexec/bin:${PATH}"
   <<: *test-template
