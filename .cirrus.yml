@@ -173,7 +173,7 @@ publish_task:
   <<: *task-template
   dist_cache: {folder: "dist", fingerprint_key: "dist"}  # download
   env:
-    TWINE_REPOSITORY: pypi
+    TWINE_REPOSITORY: testpypi
     TWINE_USERNAME: __token__
     TWINE_PASSWORD: $PYPI_TOKEN
     # See: https://cirrus-ci.org/guide/writing-tasks/#encrypted-variables
