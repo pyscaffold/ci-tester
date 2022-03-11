@@ -123,9 +123,14 @@ macos_task:
     <<: *test-env-template
 
 freebsd_task:
-  name: test (freebsd - 3.7.9)
+  name: test (freebsd - 3.8)
   freebsd_instance: {image_family: freebsd-13-0}
-  install_script: pkg install -y python devel/py-pip
+  install_script:
+    - pkg install -y python38 py38-pip
+    - ln -s /usr/local/bin/python3.8 /usr/local/bin/python
+    - ln -s /usr/local/bin/pip-3.8 /usr/local/bin/pip
+    - which python
+    - echo $PATH
   <<: *task-template
   <<: *test-template
 
