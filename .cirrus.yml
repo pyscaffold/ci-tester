@@ -9,7 +9,6 @@ env:
   LC_ALL: C.UTF-8
   LANG: C.UTF-8
   PIP_CACHE_DIR: ${CIRRUS_WORKING_DIR}/.cache/pip
-  PIPX_HOME: ${CIRRUS_WORKING_DIR}/.cache/pipx
   PRE_COMMIT_HOME: ${CIRRUS_WORKING_DIR}/.cache/pre-commit
   # Coveralls configuration
   CI_NAME: cirrus-ci
@@ -33,10 +32,6 @@ env:
   pip_cache:
     folder: "${CIRRUS_WORKING_DIR}/.cache/pip"
     fingerprint_script: echo "pip-${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
-    reupload_on_changes: true
-  pipx_cache:
-    folder: "${CIRRUS_WORKING_DIR}/.cache/pipx"
-    fingerprint_script: echo "pipx-${CIRRUS_OS}-${CIRRUS_TASK_NAME}"
     reupload_on_changes: true
   pre_commit_cache:
     folder: "${CIRRUS_WORKING_DIR}/.cache/pre-commit"
