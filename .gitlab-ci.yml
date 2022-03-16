@@ -16,6 +16,10 @@ variables:
   CI_BRANCH: $CI_COMMIT_REF_NAME
   CI_BUILD_NUMBER: $CI_PIPELINE_ID
   CI_BUILD_URL: $CI_PIPELINE_URL
+  # TODO: You will also need to set `COVERALLS_REPO_TOKEN` to work with coveralls.
+  #       We recommend that you do that via GitLab CI web interface.
+  # - https://coveralls-python.readthedocs.io/en/latest/usage/index.html
+  # - https://docs.gitlab.com/ee/ci/variables/
 
 workflow:
   rules:
@@ -50,12 +54,14 @@ default:
 check:
   stage: prepare
   image: "python:3.10"
-  script: pipx run pre-commit run --all-files --show-diff-on-failure
+  script:
+    - pipx run pre-commit run --all-files --show-diff-on-failure
 
 build:
   stage: prepare
   image: "python:3.10"
-  script: tox -e clean,build
+  script:
+    - tox -e clean,build
   variables:
     GIT_DEPTH: "0"  # deep-clone
   artifacts:
@@ -95,13 +101,15 @@ py310:
 mamba:
   stage: test
   image: "condaforge/mambaforge"
-  before_script: mamba install -y pip tox pipx
+  before_script:
+    - mamba install -y pip tox pipx
   <<: *test_script
 
 upload-coverage:
   stage: finalize
   image: "python:3.10"
-  script: pipx run coveralls --finish
+  script:
+    - pipx run coveralls --finish
 
 publish:
   stage: release
@@ -116,4 +124,5 @@ publish:
     TWINE_REPOSITORY: testpypi
     TWINE_USERNAME: __token__
     TWINE_PASSWORD: $PYPI_TOKEN
-  script: tox -e publish
+  script:
+    - tox -e publish
