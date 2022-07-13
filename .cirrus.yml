@@ -130,9 +130,8 @@ freebsd_task:
   install_script:
     - pkg update -f
     - pkg remove -y python lang/python
-    - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox
+    - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox py39-pipx
     - ln -s /usr/local/bin/python3.9 /usr/local/bin/python
-    - python -m pip install pipx  # workaround for py39-pipx
   <<: *test-template
 
 windows_task:
