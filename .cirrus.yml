@@ -127,6 +127,10 @@ build_task:
 freebsd_task:
   name: test (freebsd - 3.9)
   freebsd_instance: {image_family: freebsd-13-1}
+  env:  # Obs.: Only required to build pipx
+    PY_FLAVOR: 3.9
+    FLAVOR: py39
+    DEFAULT_VERSIONS: python=3.9 python3=3.9
   install_script:
     - pkg remove -y python lang/python
     - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox
@@ -141,10 +145,8 @@ freebsd_task:
     - portsnap extract devel/py-pipx
     - cd /usr/ports/devel/py-pipx
     - cat Makefile
-    - sed -i .bkp 's/python:3.6+/python:3.9/' Makefile
-    - cat Makefile
-    - make PY_FLAVOR=3.9 FLAVOR=py39
-    - make PY_FLAVOR=3.9 FLAVOR=py39 reinstall clean
+    - make
+    - make reinstall clean
   <<: *test-template
 
 # windows_task:
