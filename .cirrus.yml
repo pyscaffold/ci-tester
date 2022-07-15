@@ -133,8 +133,12 @@ freebsd_task:
     - ln -s /usr/local/bin/python3.9 /usr/local/bin/python
     # Install pipx from source since the latest pre-compiled version is outdated.
     # Obs.: Probably it is safe to install py39-pipx directly after Oct/2022.
-    - cd /usr/ports/devel/
-    - make fetch
+    - portsnap fetch --interactive
+      # Unfortunatelly we cannot ommit the `--interactive` config here,
+      # otherwise the random delay can be too big to afford.
+      # On the bright side, the CI should run on demand, so the likely hood
+      # of multiple jobs hitting the FreeBSD server at the same time is small.
+    - portsnap extract devel/py-pipx
     - cd /usr/ports/devel/py-pipx
     - cat Makefile
     - make FLAVOR=py39
