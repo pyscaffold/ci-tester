@@ -130,9 +130,15 @@ freebsd_task:
   install_script:
     - portsnap auto --interactive
     - pkg update -f
+    # Inspect freebsd port
+    - cat /usr/ports/devel/py-pipx/Makefile
+    # help
+    - pkg install --help
+    - pkg install --add
     - pkg remove -y python lang/python
     - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox py39-pipx
     - ln -s /usr/local/bin/python3.9 /usr/local/bin/python
+    - pkg info pipx
   <<: *test-template
 
 # windows_task:
