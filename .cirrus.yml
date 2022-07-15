@@ -141,8 +141,9 @@ freebsd_task:
     - portsnap extract devel/py-pipx
     - cd /usr/ports/devel/py-pipx
     - cat Makefile
-    - make PYTHON_PKGNAMEPREFIX=py39- FLAVOR=py39
-    - make PYTHON_PKGNAMEPREFIX=py39- FLAVOR=py39 reinstall clean
+    - sed -i "s/python:3.6+/python:3.9/g" Makefile
+    - make PY_FLAVOR=3.9 FLAVOR=py39
+    - make PY_FLAVOR=3.9 FLAVOR=py39 reinstall clean
   <<: *test-template
 
 # windows_task:
