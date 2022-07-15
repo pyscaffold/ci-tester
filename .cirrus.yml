@@ -134,7 +134,8 @@ freebsd_task:
     # Install pipx from source since the latest pre-compiled version is outdated.
     # Obs.: Probably it is safe to install py39-pipx directly after Oct/2022.
     - cd /usr/ports/devel/py-pipx
-    - make fetch-recursive
+    - make fetch
+    - cat Makefile
     - make FLAVOR=py39
     - make FLAVOR=py39 reinstall clean
   <<: *test-template
