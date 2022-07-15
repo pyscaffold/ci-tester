@@ -128,17 +128,21 @@ freebsd_task:
   name: test (freebsd - 3.9)
   freebsd_instance: {image_family: freebsd-13-1}
   install_script:
-    - portsnap auto --interactive
-    - pkg update -f
-    # Inspect freebsd port
-    - cat /usr/ports/devel/py-pipx/Makefile
-    # help
-    - pkg install --help
-    - pkg install --add
     - pkg remove -y python lang/python
-    - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox py39-pipx
+    - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox
     - ln -s /usr/local/bin/python3.9 /usr/local/bin/python
-    - pkg info pipx
+    # Install pipx from source since the latest pre-compiled version is outdated.
+    # Obs.: Probably it is safe to install py39-pipx directly after Oct/2022.
+    - pkg update -f
+    # - portsnap auto --interactive
+    #   # Unfortunatelly we cannot ommit the `--interactive` config here,
+    #   # otherwise the random delay can be too big to afford.
+    #   # On the bright side, the CI should run on demand, so the likely hood
+    #   # of multiple jobs hitting the FreeBSD server at the same time is small.
+    - cd /usr/ports/devel/py-pipx
+    - cat Makefile
+    - make -DPY_FLAVOR=3.9
+    - make -DPY_FLAVOR=3.9 install clean
   <<: *test-template
 
 # windows_task:
