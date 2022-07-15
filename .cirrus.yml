@@ -136,7 +136,7 @@ freebsd_task:
     - cd /usr/ports/devel/py-pipx
     - make fetch-recursive
     - make FLAVOR=py39
-    - make FLAVOR=py39 install clean
+    - make FLAVOR=py39 reinstall clean
   <<: *test-template
 
 # windows_task:
