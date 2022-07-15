@@ -140,8 +140,8 @@ freebsd_task:
       # of multiple jobs hitting the FreeBSD server at the same time is small.
     - cd /usr/ports/devel/py-pipx
     - cat Makefile
-    - make -DPY_FLAVOR=3.9
-    - make -DPY_FLAVOR=3.9 install clean
+    - make FLAVOR=py39
+    - make FLAVOR=py39 install clean
   <<: *test-template
 
 # windows_task:
