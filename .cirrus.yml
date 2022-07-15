@@ -133,6 +133,7 @@ freebsd_task:
     DEFAULT_VERSIONS: python=3.9 python3=3.9
   install_script:
     # The pipx port for 2022Q3 is outdated/broken, we need the latest
+    - mkdir -p /usr/local/etc/pkg/repos/
     - cp /etc/pkg/FreeBSD.conf /usr/local/etc/pkg/repos/FreeBSD.conf
     - sed -i .bkp 's/quarterly/latest/' /usr/local/etc/pkg/repos/FreeBSD.conf
     - cat /usr/local/etc/pkg/repos/FreeBSD.conf
