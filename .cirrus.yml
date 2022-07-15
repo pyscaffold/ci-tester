@@ -132,13 +132,17 @@ freebsd_task:
     FLAVOR: py39
     DEFAULT_VERSIONS: python=3.9 python3=3.9
   install_script:
+    # The pipx port for 2022Q3 is outdated/broken, we need the latest
+    - cp /etc/pkg/FreeBSD.conf /usr/local/etc/pkg/repos/FreeBSD.conf
+    - sed -i .bkp 's/quarterly/latest/' /usr/local/etc/pkg/repos/FreeBSD.conf
+    - cat /usr/local/etc/pkg/repos/FreeBSD.conf
     - pkg remove -y python lang/python
     - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox
     - ln -s /usr/local/bin/python3.9 /usr/local/bin/python
     - pkg update -f
     - pkg search pipx
     - pkg search -o pipx
-    - pkg install -y py39-pipx-1.1.0
+    - pkg install -y py39-pipx
     # # Install pipx from source since the latest pre-compiled version is outdated.
     # # Obs.: Probably it is safe to install py39-pipx directly after Oct/2022.
     # - portsnap fetch --interactive
