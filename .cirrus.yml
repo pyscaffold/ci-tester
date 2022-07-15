@@ -135,18 +135,22 @@ freebsd_task:
     - pkg remove -y python lang/python
     - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox
     - ln -s /usr/local/bin/python3.9 /usr/local/bin/python
-    # Install pipx from source since the latest pre-compiled version is outdated.
-    # Obs.: Probably it is safe to install py39-pipx directly after Oct/2022.
-    - portsnap fetch --interactive
-      # Unfortunatelly we cannot ommit the `--interactive` config here,
-      # otherwise the random delay can be too big to afford.
-      # On the bright side, the CI should run on demand, so the likely hood
-      # of multiple jobs hitting the FreeBSD server at the same time is small.
-    - portsnap extract devel/py-pipx
-    - cd /usr/ports/devel/py-pipx
-    - cat Makefile
-    - make
-    - make reinstall clean
+    - pkg update -f
+    - pkg search pipx
+    - pkg search -o pipx
+    - pkg install -y py39-pipx-1.1.0_1
+    # # Install pipx from source since the latest pre-compiled version is outdated.
+    # # Obs.: Probably it is safe to install py39-pipx directly after Oct/2022.
+    # - portsnap fetch --interactive
+    #   # Unfortunatelly we cannot ommit the `--interactive` config here,
+    #   # otherwise the random delay can be too big to afford.
+    #   # On the bright side, the CI should run on demand, so the likely hood
+    #   # of multiple jobs hitting the FreeBSD server at the same time is small.
+    # - portsnap extract devel/py-pipx
+    # - cd /usr/ports/devel/py-pipx
+    # - cat Makefile
+    # - make
+    # - make reinstall clean
   <<: *test-template
 
 # windows_task:
