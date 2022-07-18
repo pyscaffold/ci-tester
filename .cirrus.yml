@@ -143,7 +143,7 @@ freebsd_task:
     - pkg update -f
     - pkg search pipx
     - pkg search -o pipx
-    - pkg install -y py39-pipx
+    - pkg install -y py39-pipx-0.16.3
     # # Install pipx from source since the latest pre-compiled version is outdated.
     # # Obs.: Probably it is safe to install py39-pipx directly after Oct/2022.
     # - portsnap fetch --interactive
