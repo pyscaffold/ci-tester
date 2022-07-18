@@ -133,29 +133,13 @@ freebsd_task:
     DEFAULT_VERSIONS: python=3.9 python3=3.9
   install_script:
     # The pipx port for 2022Q3 is outdated/broken, we need the latest
-    - mkdir -p /usr/local/etc/pkg/repos/
-    - cp /etc/pkg/FreeBSD.conf /usr/local/etc/pkg/repos/FreeBSD.conf
-    - sed -i .bkp 's/quarterly/latest/' /usr/local/etc/pkg/repos/FreeBSD.conf
-    - cat /usr/local/etc/pkg/repos/FreeBSD.conf
     - pkg remove -y python lang/python
     - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox
     - ln -s /usr/local/bin/python3.9 /usr/local/bin/python
-    - pkg update -f
-    - pkg search pipx
-    - pkg search -o pipx
-    - pkg install -y py39-pipx-0.16.3
-    # # Install pipx from source since the latest pre-compiled version is outdated.
-    # # Obs.: Probably it is safe to install py39-pipx directly after Oct/2022.
-    # - portsnap fetch --interactive
-    #   # Unfortunatelly we cannot ommit the `--interactive` config here,
-    #   # otherwise the random delay can be too big to afford.
-    #   # On the bright side, the CI should run on demand, so the likely hood
-    #   # of multiple jobs hitting the FreeBSD server at the same time is small.
-    # - portsnap extract devel/py-pipx
-    # - cd /usr/ports/devel/py-pipx
-    # - cat Makefile
-    # - make
-    # - make reinstall clean
+    - pip install -U pipx
+      # In 2022Q2, the version or pipx in freebsd repos is outdated/broken.
+      # So we need to install with pipx.
+      # Probably it is safe to install py39-pipx directly after Oct/2022.
   <<: *test-template
 
 # windows_task:
