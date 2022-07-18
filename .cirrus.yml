@@ -130,7 +130,6 @@ freebsd_task:
   install_script:
     - pkg remove -y python lang/python
     - pkg install -y git python39 py39-pip py39-gdbm py39-sqlite3 py39-tox # py39-pipx
-    # The pipx port for 2022Q3 is outdated/broken, we need the latest
     - pip install -U pipx
       # pipx in freebsd 2022Q3 is outdated/broken, so we obtain it with pip.
       # Probably it is safe to `pkg install py39-pipx` directly after Oct/2022.
