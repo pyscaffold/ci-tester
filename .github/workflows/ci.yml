@@ -31,15 +31,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
+        id: setup-python
         with: {python-version: "3.10"}
+      - name: Configure pipx
+        run: echo 'PIPX_DEFAULT_PYTHON=${{ steps.setup-python.outputs.python-path }}' >> $GITHUB_ENV
       - name: Run static analysis and format checkers
         run: pipx run pre-commit run --all-files --show-diff-on-failure
       - name: Build package distribution files
         run: pipx run tox -e clean,build
       - name: Record the path of wheel distribution
         id: wheel-distribution
-        run: echo "::set-output name=path::$(ls dist/*.whl)"
+        run: echo "path=$(ls dist/*.whl)" >> $GITHUB_OUTPUT
       - name: Store the distribution files for use in other stages
         # `tests` and `publish` will use the same pre-built distributions,
         # so we make sure to release the exact same package that was tested
@@ -55,7 +58,7 @@ jobs:
       matrix:
         python:
         - "3.7"  # oldest Python supported by PSF
-        - "3.10"  # newest Python that is stable
+        - "3.11"  # newest Python that is stable
         platform:
         - ubuntu-latest
         - macos-latest
@@ -63,9 +66,12 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
+        id: setup-python
         with:
           python-version: ${{ matrix.python }}
+      - name: Configure pipx
+        run: echo 'PIPX_DEFAULT_PYTHON=${{ steps.setup-python.outputs.python-path }}' >> $GITHUB_ENV
       - name: Retrieve pre-built distribution files
         uses: actions/download-artifact@v3
         with: {name: python-distribution-files, path: dist/}
@@ -100,8 +106,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
+        id: setup-python
         with: {python-version: "3.10"}
+      - name: Configure pipx
+        run: echo 'PIPX_DEFAULT_PYTHON=${{ steps.setup-python.outputs.python-path }}' >> $GITHUB_ENV
       - name: Retrieve pre-built distribution files
         uses: actions/download-artifact@v3
         with: {name: python-distribution-files, path: dist/}
