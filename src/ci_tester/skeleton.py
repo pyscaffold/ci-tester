@@ -13,7 +13,7 @@ Besides console scripts, the header (i.e. until ``_logger``...) of this file can
 also be used as template for Python modules.
 
 Note:
-    This skeleton file can be safely removed if not needed!
+    This file can be renamed depending on your needs or safely removed if not needed.
 
 References:
     - https://setuptools.pypa.io/en/latest/userguide/entry_point.html
@@ -76,7 +76,7 @@ def parse_args(args):
     parser.add_argument(
         "--version",
         action="version",
-        version="ci-tester {ver}".format(ver=__version__),
+        version=f"ci-tester {__version__}",
     )
     parser.add_argument(dest="n", help="n-th Fibonacci number", type=int, metavar="INT")
     parser.add_argument(
@@ -123,7 +123,7 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.loglevel)
     _logger.debug("Starting crazy calculations...")
-    print("The {}-th Fibonacci number is {}".format(args.n, fib(args.n)))
+    print(f"The {args.n}-th Fibonacci number is {fib(args.n)}")
     _logger.info("Script ends here")
 
 
